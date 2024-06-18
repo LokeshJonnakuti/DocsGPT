@@ -39,7 +39,7 @@ class SitemapLoader(BaseRemote):
 
     def _extract_urls(self, sitemap_url):
         try:
-            response = requests.get(sitemap_url)
+            response = requests.get(sitemap_url, timeout=60)
             response.raise_for_status()  # Raise an exception for HTTP errors
         except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:
             print(f"Failed to fetch sitemap: {sitemap_url}. Error: {e}")

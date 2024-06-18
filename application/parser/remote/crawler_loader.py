@@ -31,7 +31,7 @@ class CrawlerLoader(BaseRemote):
 
             # Try to load and process the content from the current URL
             try:
-                response = requests.get(current_url)  # Fetch the content of the current URL
+                response = requests.get(current_url, timeout=60)  # Fetch the content of the current URL
                 response.raise_for_status()  # Raise an exception for HTTP errors
                 loader = self.loader([current_url])  # Initialize the document loader for the current URL
                 loaded_content.extend(loader.load())  # Load the content and add it to the loaded_content list
