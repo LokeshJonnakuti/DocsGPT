@@ -2,6 +2,7 @@ import requests
 import re  # Import regular expression library
 import xml.etree.ElementTree as ET
 from application.parser.remote.base import BaseRemote
+from security import safe_requests
 
 class SitemapLoader(BaseRemote):
     def __init__(self, limit=20):
@@ -39,7 +40,7 @@ class SitemapLoader(BaseRemote):
 
     def _extract_urls(self, sitemap_url):
         try:
-            response = requests.get(sitemap_url)
+            response = safe_requests.get(sitemap_url)
             response.raise_for_status()  # Raise an exception for HTTP errors
         except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError) as e:
             print(f"Failed to fetch sitemap: {sitemap_url}. Error: {e}")
