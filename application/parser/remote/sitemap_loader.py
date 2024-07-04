@@ -1,7 +1,7 @@
 import requests
 import re  # Import regular expression library
-import xml.etree.ElementTree as ET
 from application.parser.remote.base import BaseRemote
+import defusedxml.ElementTree
 
 class SitemapLoader(BaseRemote):
     def __init__(self, limit=20):
@@ -67,7 +67,7 @@ class SitemapLoader(BaseRemote):
         # Remove namespaces
         sitemap_content = re.sub(' xmlns="[^"]+"', '', sitemap_content.decode('utf-8'), count=1)
 
-        root = ET.fromstring(sitemap_content)
+        root = defusedxml.ElementTree.fromstring(sitemap_content)
 
         urls = []
         for loc in root.findall('.//url/loc'):
