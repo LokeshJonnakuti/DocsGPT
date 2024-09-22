@@ -12,6 +12,7 @@ from application.api.user.tasks import ingest, ingest_remote
 
 from application.core.settings import settings
 from application.vectorstore.vector_creator import VectorCreator
+from security import safe_requests
 
 mongo = MongoClient(settings.MONGO_URI)
 db = mongo["docsgpt"]
@@ -333,7 +334,7 @@ def check_docs():
             and file_url.netloc == "raw.githubusercontent.com"
             and file_url.path.startswith("/arc53/DocsHUB/main/")
         ):
-            r = requests.get(file_url.geturl())
+            r = safe_requests.get(file_url.geturl())
             if r.status_code != 200:
                 return {"status": "null"}
             else:
@@ -342,7 +343,7 @@ def check_docs():
                 with open(vectorstore + "index.faiss", "wb") as f:
                     f.write(r.content)
 
-                r = requests.get(base_path + vectorstore + "index.pkl")
+                r = safe_requests.get(base_path + vectorstore + "index.pkl")
                 with open(vectorstore + "index.pkl", "wb") as f:
                     f.write(r.content)
         else:

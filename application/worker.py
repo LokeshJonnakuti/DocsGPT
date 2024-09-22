@@ -13,6 +13,7 @@ from application.parser.remote.remote_creator import RemoteCreator
 from application.parser.open_ai_func import call_openai_api
 from application.parser.schema.base import Document
 from application.parser.token_func import group_split
+from security import safe_requests
 
 # Define a function to extract metadata from a given filename.
 def metadata_from_filename(title):
@@ -93,7 +94,7 @@ def ingest_worker(self, directory, formats, name_job, filename, user):
     print(full_path, file=sys.stderr)
     # check if API_URL env variable is set
     file_data = {"name": name_job, "file": filename, "user": user}
-    response = requests.get(
+    response = safe_requests.get(
         urljoin(settings.API_URL, "/api/download"), params=file_data
     )
     # check if file is in the response
@@ -150,7 +151,7 @@ def ingest_worker(self, directory, formats, name_job, filename, user):
         response = requests.post(
             urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data
         )
-        response = requests.get(
+        response = safe_requests.get(
             urljoin(settings.API_URL, "/api/delete_old?path=" + full_path)
         )
     else:
@@ -206,7 +207,7 @@ def remote_worker(self, source_data, name_job, user, loader, directory="temp"):
         requests.post(
             urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data
         )
-        requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path))
+        safe_requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path))
     else:
         requests.post(urljoin(settings.API_URL, "/api/upload_index"), data=file_data)
 
