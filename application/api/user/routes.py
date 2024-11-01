@@ -275,8 +275,8 @@ def combined_json():
         )
     if settings.VECTOR_STORE == "faiss":
         data_remote = requests.get(
-            "https://d3dg1063dc54p9.cloudfront.net/combined.json"
-        ).json()
+            "https://d3dg1063dc54p9.cloudfront.net/combined.json", 
+        timeout=60).json()
         for index in data_remote:
             index["location"] = "remote"
             data.append(index)
@@ -333,7 +333,7 @@ def check_docs():
             and file_url.netloc == "raw.githubusercontent.com"
             and file_url.path.startswith("/arc53/DocsHUB/main/")
         ):
-            r = requests.get(file_url.geturl())
+            r = requests.get(file_url.geturl(), timeout=60)
             if r.status_code != 200:
                 return {"status": "null"}
             else:
@@ -342,7 +342,7 @@ def check_docs():
                 with open(vectorstore + "index.faiss", "wb") as f:
                     f.write(r.content)
 
-                r = requests.get(base_path + vectorstore + "index.pkl")
+                r = requests.get(base_path + vectorstore + "index.pkl", timeout=60)
                 with open(vectorstore + "index.pkl", "wb") as f:
                     f.write(r.content)
         else:

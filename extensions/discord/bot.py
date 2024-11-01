@@ -41,7 +41,7 @@ async def fetch_answer(question):
     }
     headers = {"Content-Type": "application/json",
                "Accept": "application/json"}
-    response = requests.post(BASE_API_URL + '/api/answer', json=data, headers=headers)
+    response = requests.post(BASE_API_URL + '/api/answer', json=data, headers=headers, timeout=60)
     if response.status_code == 200:
         return response.json()['answer']
     return 'Sorry, I could not fetch the answer.'

@@ -27,7 +27,7 @@ def send_to_bot(sender, message):
                "Accept": "application/json"}
 
     r = requests.post(f'{docsgpt_url}/api/answer',
-                      json=data, headers=headers)
+                      json=data, headers=headers, timeout=60)
     return r.json()['answer']
 
 
@@ -41,7 +41,7 @@ def send_to_chatwoot(account, conversation, message):
                "api_access_token": f"{chatwoot_token}"}
 
     r = requests.post(url,
-                      json=data, headers=headers)
+                      json=data, headers=headers, timeout=60)
     return r.json()
 
 

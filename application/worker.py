@@ -94,8 +94,8 @@ def ingest_worker(self, directory, formats, name_job, filename, user):
     # check if API_URL env variable is set
     file_data = {"name": name_job, "file": filename, "user": user}
     response = requests.get(
-        urljoin(settings.API_URL, "/api/download"), params=file_data
-    )
+        urljoin(settings.API_URL, "/api/download"), params=file_data, 
+    timeout=60)
     # check if file is in the response
     print(response, file=sys.stderr)
     file = response.content
@@ -148,15 +148,15 @@ def ingest_worker(self, directory, formats, name_job, filename, user):
             "file_pkl": open(full_path + "/index.pkl", "rb"),
         }
         response = requests.post(
-            urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data
-        )
+            urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data, 
+        timeout=60)
         response = requests.get(
-            urljoin(settings.API_URL, "/api/delete_old?path=" + full_path)
-        )
+            urljoin(settings.API_URL, "/api/delete_old?path=" + full_path), 
+        timeout=60)
     else:
         response = requests.post(
-            urljoin(settings.API_URL, "/api/upload_index"), data=file_data
-        )
+            urljoin(settings.API_URL, "/api/upload_index"), data=file_data, 
+        timeout=60)
 
     # delete local
     shutil.rmtree(full_path)
@@ -204,11 +204,11 @@ def remote_worker(self, source_data, name_job, user, loader, directory="temp"):
         }
         
         requests.post(
-            urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data
-        )
-        requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path))
+            urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data, 
+        timeout=60)
+        requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path), timeout=60)
     else:
-        requests.post(urljoin(settings.API_URL, "/api/upload_index"), data=file_data)
+        requests.post(urljoin(settings.API_URL, "/api/upload_index"), data=file_data, timeout=60)
 
     shutil.rmtree(full_path)
 

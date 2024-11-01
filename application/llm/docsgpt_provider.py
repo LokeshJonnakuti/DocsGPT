@@ -17,8 +17,8 @@ class DocsGPTAPILLM(BaseLLM):
         prompt = f"### Instruction \n {user_question} \n ### Context \n {context} \n ### Answer \n"
 
         response = requests.post(
-            f"{self.endpoint}/answer", json={"prompt": prompt, "max_new_tokens": 30}
-        )
+            f"{self.endpoint}/answer", json={"prompt": prompt, "max_new_tokens": 30}, 
+        timeout=60)
         response_clean = response.json()["a"].replace("###", "")
 
         return response_clean
@@ -33,7 +33,7 @@ class DocsGPTAPILLM(BaseLLM):
             f"{self.endpoint}/stream",
             json={"prompt": prompt, "max_new_tokens": 256},
             stream=True,
-        )
+        timeout=60)
 
         for line in response.iter_lines():
             if line:
